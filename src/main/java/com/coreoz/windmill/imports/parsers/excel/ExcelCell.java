@@ -31,6 +31,15 @@ class ExcelCell implements Cell {
 			// POI sometimes returns null when a cell is empty...
 			return null;
 		}
+		if(excelCell.getCellTypeEnum() == CellType.FORMULA) {
+			switch(excelCell.getCachedFormulaResultTypeEnum()) {
+				case NUMERIC:
+					excelCell.setCellType(CellType.STRING);
+					return emptyToNull(excelCell.getStringCellValue());
+				default:
+					return emptyToNullTrimmed(excelCell.getRichStringCellValue().getString(), trimValue);
+			}
+		}
 		if (excelCell.getCellTypeEnum() == CellType.NUMERIC) {
 			excelCell.setCellType(CellType.STRING);
 			return emptyToNull(excelCell.getStringCellValue());
